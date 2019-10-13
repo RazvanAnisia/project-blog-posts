@@ -106,7 +106,7 @@ class App extends React.Component {
   };
 
   formValidation = () => {
-    if (!this.state.titleValue && !this.state.descriptionValue) {
+    if (!this.state.titleValue || !this.state.descriptionValue) {
       toast('Please add a title and a description', { autoClose: 2000 });
       return false;
     } else {
@@ -267,7 +267,6 @@ export default App;
 /*
 - Layout component
 - Form component
-- Add React toastify for posting or upadting confirmation, errors
 - Post Card component
 - Post title
 - Post description
