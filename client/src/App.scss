@@ -3,6 +3,7 @@ body {
   color: white;
   font-family: 'Courier New', Courier, monospace;
 }
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -20,6 +21,15 @@ body {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
+  }
+  .toast-notification {
+    .Toastify__toast--default {
+      background: purple;
+      color: white;
+    }
+  }
+  .loader {
+    margin-top: 200px;
   }
 }
 .cancel-btn {
@@ -42,6 +52,10 @@ body {
   color: white;
 }
 
+.sort-param {
+  color: rgb(255, 0, 255);
+  letter-spacing: 0.3px;
+}
 .form-container {
   display: flex;
   flex-direction: column;
@@ -58,6 +72,12 @@ body {
     border: none;
     padding: 10px;
     font-size: 16px;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+
+    &:focus {
+      border: 2px solid #ff00f2;
+    }
   }
   textarea {
     // padding: 0;
@@ -109,6 +129,10 @@ body {
     }
     .delete-btn {
       display: block;
+    }
+    .btn {
+      background: #ff00f2;
+      color: white;
     }
   }
 }

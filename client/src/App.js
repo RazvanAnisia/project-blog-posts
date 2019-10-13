@@ -1,6 +1,12 @@
 import React from 'react';
 import './App.scss';
 
+import { ToastContainer, toast } from 'react-toastify';
+import Loader from 'react-loader-spinner';
+
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 class App extends React.Component {
   state = {
     apiData: null,
@@ -8,8 +14,12 @@ class App extends React.Component {
     descriptionValue: '',
     formState: 'post',
     selectedPostId: '',
-    sortChronologically: false
+    sortChronologically: false,
+    isLoading: true
   };
+
+  formRef = React.createRef();
+  updateRef = React.createRef();
 
   componentDidMount() {
     this.fetchApiData();
@@ -18,8 +28,8 @@ class App extends React.Component {
   fetchApiData() {
     fetch('http://localhost:9000/posts')
       .then(res => res.json())
-      .then(res => this.setState({ apiData: res }))
-      .catch(err => alert(err));
+      .then(res => this.setState({ apiData: res, isLoading: false }))
+      .catch(err => toast('There was an error fetching the posts'));
   }
 
   deletePost(id) {
@@ -28,7 +38,7 @@ class App extends React.Component {
     })
       .then(() => this.fetchApiData())
       .then(() => console.log('deletedPost'))
-      .catch(err => alert(err));
+      .catch(err => toast('There was an error'));
   }
 
   updatePost() {
@@ -55,7 +65,8 @@ class App extends React.Component {
     this.setState({
       formState: 'post',
       titleValue: '',
-      descriptionValue: ''
+      descriptionValue: '',
+      selectedPostId: null
     });
   };
 
@@ -69,9 +80,10 @@ class App extends React.Component {
   };
 
   handlePostSelect = id => {
-    console.log(id);
+    this.formRef.current.scrollIntoView({ behavior: 'smooth' });
     const selectedPost = this.state.apiData.find(el => el['_id'] === id);
     console.log(selectedPost);
+    this.updateRef.current.focus();
     //update the state of the form
 
     this.setState({
@@ -82,28 +94,46 @@ class App extends React.Component {
     });
   };
 
+  formValidation = () => {
+    if (!this.state.titleValue && !this.state.descriptionValue) {
+      toast('Please add a title and a description', { autoClose: 2000 });
+      return false;
+    } else {
+      return true;
+    }
+  };
   handleFormSubmit = e => {
     e.preventDefault();
     // console.log(this.state);
-    if (this.state.formState === 'post') {
-      fetch('http://localhost:9000/posts', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: this.state.titleValue,
-          description: this.state.descriptionValue
+    if (this.formValidation()) {
+      if (this.state.formState === 'post') {
+        fetch('http://localhost:9000/posts', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: this.state.titleValue,
+            description: this.state.descriptionValue
+          })
         })
-      })
-        .then(() => this.fetchApiData())
-        .catch(err => alert(err));
-    } else if (this.state.formState === 'update') {
-      this.updatePost();
+          .then(() => {
+            this.setState({
+              titleValue: '',
+              descriptionValue: ''
+            });
+            this.fetchApiData();
+            toast('Post added', { autoClose: 2000 });
+            console.log('form was submitted');
+          })
+          .catch(err => toast(err, { autoClose: 2000 }));
+      } else if (this.state.formState === 'update') {
+        this.updatePost();
+        toast('Post updated', { autoClose: 2000 });
+        console.log('form was submitted');
+      }
     }
-
-    console.log('form was submitted');
   };
 
   handleDescriptionChange = e => {
@@ -125,13 +155,29 @@ class App extends React.Component {
   };
   render() {
     console.log(this.state);
+
+    if (this.state.isLoading) {
+      return (
+        <div className="app-container">
+          <Loader
+            className="loader"
+            type="Rings"
+            color="purple"
+            height={150}
+            width={150}
+          />
+        </div>
+      );
+    }
     return (
       <div className="app-container">
-        <h2>Blog Posts</h2>
+        <ToastContainer className="toast-notification" />
+        <h2 ref={this.formRef}>Blog Posts</h2>
         <p>{this.state.selectedPostId ? 'Update the post' : 'Add a post'}</p>
         <div className="form-container">
           <form onSubmit={e => this.handleFormSubmit(e)}>
             <input
+              ref={this.updateRef}
               value={this.state.titleValue}
               onChange={e => this.handleTitleChange(e)}
               placeholder="Title"
@@ -156,9 +202,12 @@ class App extends React.Component {
           ) : null}
         </div>
         <button onClick={this.handleSortByDate} className="sort-btn">
-          {this.state.sortChronologically
-            ? 'See OLDER posts'
-            : 'See LATEST posts'}
+          See
+          {this.state.sortChronologically ? (
+            <span className="sort-param"> OLDEST</span>
+          ) : (
+            <span className="sort-param"> LATEST</span>
+          )}
         </button>
         <div className="posts-container">
           {this.state.apiData &&
