@@ -7,6 +7,66 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  .add-btn {
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    background: rgb(76, 20, 197);
+    font-weight: 600;
+    color: #ffffff;
+  }
+  .posts-container {
+    width: 1200px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+}
+.cancel-btn {
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: rgb(255, 0, 242);
+  font-weight: 600;
+  position: absolute;
+  bottom: 0;
+  left: 100px;
+}
+
+.sort-btn {
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: rgb(40, 6, 85);
+  font-weight: 600;
+  color: white;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: 30px;
+
+  .form {
+    width: 500px;
+  }
+  input,
+  textarea {
+    width: 500px;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+  }
+  textarea {
+    // padding: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 200px;
+  }
+  input {
+  }
 }
 .post-card {
   width: 500px;
@@ -40,6 +100,7 @@ body {
     position: absolute;
     font-size: 10px;
     bottom: 0;
+    color: rgb(140, 153, 153);
   }
   &:hover {
     background: rgb(96, 3, 112);
@@ -48,6 +109,18 @@ body {
     }
     .delete-btn {
       display: block;
+    }
+  }
+}
+
+@media (max-width: 1170px) {
+  .app-container {
+    .posts-container {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      width: 100%;
     }
   }
 }

@@ -7,7 +7,8 @@ class App extends React.Component {
     titleValue: '',
     descriptionValue: '',
     formState: 'post',
-    selectedPostId: ''
+    selectedPostId: '',
+    sortChronologically: false
   };
 
   componentDidMount() {
@@ -110,53 +111,80 @@ class App extends React.Component {
     this.setState({ descriptionValue: e.target.value });
   };
 
+  handleSortByDate = () => {
+    const sorted = this.state.apiData.slice().sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateB - dateA;
+    });
+    if (!this.state.sortChronologically) {
+      this.setState({ apiData: sorted, sortChronologically: true });
+    } else {
+      this.setState({ apiData: sorted.reverse(), sortChronologically: false });
+    }
+  };
   render() {
     console.log(this.state);
     return (
       <div className="app-container">
         <h2>Blog Posts</h2>
-        {this.state.apiData &&
-          this.state.apiData.map(el => (
-            <div className="post-card" key={el['_id']}>
-              <h3>{el.title}</h3>
-              <p>{el.description}</p>
-              <p className="date-details">
-                Originally posted on: {this.formatDate(el.date)}
-              </p>
-              <span
-                className="delete-btn"
-                onClick={() => this.handleDeleteClick(el['_id'])}>
-                X
-              </span>
-              <a className="read-more-btn" href={'#'}>
-                Read More
-              </a>
-              <button
-                className="btn"
-                onClick={() => this.handlePostSelect(el['_id'])}>
-                Update post
-              </button>
-            </div>
-          ))}
-        <p>Add a post:</p>
-        <form onSubmit={e => this.handleFormSubmit(e)}>
-          <input
-            value={this.state.titleValue}
-            onChange={e => this.handleTitleChange(e)}
-            placeholder="Title"
-            type="text"
-            name="tile"
-          />
-          <br />
-          <textarea
-            value={this.state.descriptionValue}
-            onChange={e => this.handleDescriptionChange(e)}
-            placeholder="Description"
-            name="description"></textarea>
-          <br />
-          <button type="submit">Add Post</button>
-        </form>
-        <button onClick={this.handleFormReset}>Cancel Update</button>
+        <p>{this.state.selectedPostId ? 'Update the post' : 'Add a post'}</p>
+        <div className="form-container">
+          <form onSubmit={e => this.handleFormSubmit(e)}>
+            <input
+              value={this.state.titleValue}
+              onChange={e => this.handleTitleChange(e)}
+              placeholder="Title"
+              type="text"
+              name="tile"
+            />
+            <br />
+            <textarea
+              value={this.state.descriptionValue}
+              onChange={e => this.handleDescriptionChange(e)}
+              placeholder="Your blog post goes here"
+              name="description"></textarea>
+            <br />
+            <button className="add-btn" type="submit">
+              Add Post
+            </button>
+          </form>
+          {this.state.selectedPostId ? (
+            <button className="cancel-btn" onClick={this.handleFormReset}>
+              Cancel Update
+            </button>
+          ) : null}
+        </div>
+        <button onClick={this.handleSortByDate} className="sort-btn">
+          {this.state.sortChronologically
+            ? 'See OLDER posts'
+            : 'See LATEST posts'}
+        </button>
+        <div className="posts-container">
+          {this.state.apiData &&
+            this.state.apiData.map(el => (
+              <div className="post-card" key={el['_id']}>
+                <h3>{el.title}</h3>
+                <p>{el.description}</p>
+                <p className="date-details">
+                  Originally posted on: {this.formatDate(el.date)}
+                </p>
+                <span
+                  className="delete-btn"
+                  onClick={() => this.handleDeleteClick(el['_id'])}>
+                  x
+                </span>
+                <a className="read-more-btn" href={'#'}>
+                  Read More
+                </a>
+                <button
+                  className="btn"
+                  onClick={() => this.handlePostSelect(el['_id'])}>
+                  Update post
+                </button>
+              </div>
+            ))}
+        </div>
       </div>
     );
   }
