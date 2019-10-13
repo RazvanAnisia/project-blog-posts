@@ -3,6 +3,7 @@ import './App.scss';
 
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
+import Error from './components/Error';
 
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,7 +16,8 @@ class App extends React.Component {
     formState: 'post',
     selectedPostId: '',
     sortChronologically: false,
-    isLoading: true
+    isLoading: true,
+    appError: false
   };
 
   formRef = React.createRef();
@@ -29,7 +31,10 @@ class App extends React.Component {
     fetch('http://localhost:9000/posts')
       .then(res => res.json())
       .then(res => this.setState({ apiData: res, isLoading: false }))
-      .catch(err => toast('There was an error fetching the posts'));
+      .catch(err => {
+        this.setState({ appError: true });
+        toast('There was an error fetching the posts');
+      });
   }
 
   deletePost(id) {
@@ -38,7 +43,10 @@ class App extends React.Component {
     })
       .then(() => this.fetchApiData())
       .then(() => console.log('deletedPost'))
-      .catch(err => toast('There was an error'));
+      .catch(err => {
+        this.setState({ appError: true });
+        toast('There was an error', err);
+      });
   }
 
   updatePost() {
@@ -53,7 +61,10 @@ class App extends React.Component {
       })
     })
       .then(() => this.fetchApiData())
-      .catch(err => alert(err));
+      .catch(err => {
+        this.setState({ appError: true });
+        toast('There was an error', err);
+      });
   }
 
   formatDate(date) {
@@ -156,9 +167,19 @@ class App extends React.Component {
   render() {
     console.log(this.state);
 
+    if (this.state.appError) {
+      return (
+        <div className="app-container">
+          <ToastContainer className="toast-notification" />
+          <Error />
+        </div>
+      );
+    }
     if (this.state.isLoading) {
       return (
         <div className="app-container">
+          <ToastContainer className="toast-notification" />
+
           <Loader
             className="loader"
             type="Rings"
