@@ -113,20 +113,27 @@ class App extends React.Component {
   render() {
     console.log(this.state);
     return (
-      <div>
+      <div className="app-container">
+        <h2>Blog Posts</h2>
         {this.state.apiData &&
           this.state.apiData.map(el => (
             <div className="post-card" key={el['_id']}>
               <h3>{el.title}</h3>
               <p>{el.description}</p>
-              <p>Originally posted on: {this.formatDate(el.date)}</p>
+              <p className="date-details">
+                Originally posted on: {this.formatDate(el.date)}
+              </p>
               <span
                 className="delete-btn"
                 onClick={() => this.handleDeleteClick(el['_id'])}>
                 X
               </span>
-              <a href={'#'}>Read More</a>
-              <button onClick={() => this.handlePostSelect(el['_id'])}>
+              <a className="read-more-btn" href={'#'}>
+                Read More
+              </a>
+              <button
+                className="btn"
+                onClick={() => this.handlePostSelect(el['_id'])}>
                 Update post
               </button>
             </div>

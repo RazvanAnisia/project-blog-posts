@@ -1,18 +1,53 @@
+body {
+  background: rgb(38, 14, 59);
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+}
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .post-card {
-  border: 3px solid black;
-  width: 400px;
+  width: 500px;
+  min-height: 200px;
   margin: 20px;
   padding: 10px;
   position: relative;
-}
+  .delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    display: none;
+  }
 
-.post-card:hover {
-  background: yellow;
-}
-
-.delete-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
+  .btn {
+    border: none;
+    background: white;
+    padding: 10px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: aqua;
+    font-weight: 600;
+  }
+  .read-more-btn {
+    color: rgb(212, 69, 212);
+  }
+  .date-details {
+    position: absolute;
+    font-size: 10px;
+    bottom: 0;
+  }
+  &:hover {
+    background: rgb(96, 3, 112);
+    .read-more-btn {
+      color: #ffffff;
+    }
+    .delete-btn {
+      display: block;
+    }
+  }
 }
