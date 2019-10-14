@@ -7,7 +7,6 @@ require('dotenv/config');
 
 mongoose.connect(
   'mongodb://raz:Nucleotida93@ds127545.mlab.com:27545/rest-tutorial',
-  { useNewUrlParser: true },
   console.log('Connected to DB')
 );
 
