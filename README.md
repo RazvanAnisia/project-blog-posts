@@ -1,7 +1,7 @@
 # Blog App
 
-A MERN application for adding blog posts. Was built while I was playing aroun with Express and Node.js.
-It's missing authentication, and authorization. Plans are to use JWT for this.
+A MERN application for adding blog posts. Was built while I was playing around with Express and MongoDB.
+It's missing authentication, and authorization. Plans are to use JWT for this sometime in the future.
 
 ## Tech Stack
 * Uses Mongodb as a NoSQL database
